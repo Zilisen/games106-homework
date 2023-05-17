@@ -45,4 +45,45 @@ float3 Tonemap_ACES(const float3 c) {
 
 ## 开做
 
-need redo
+need redo，将一些不太清晰的概念记录在下面。
+
+参考资料：
+《Vulkan应用开发指南》
+
+## 描述符集
+
+描述符集是作为整体绑定到管线的资源的集合。可以同时将多个集合绑定到一个管线。每一个集合都有一个布局，布局描述了集合中资源的排列顺序和类型。两个拥有相同布局的集合被视为兼容的和可相互交换的。描述符集的布局通过一个对象表示，集合都是参照这个对象创建的。另外，可被管线访问的集合的集合组成了另一个对象—— 管线布局。管线通过参照这个管线布局对象来创建。
+
+![描述符集和管线集](img/2023-05-17-23-21-00.png)
+
+在任何时刻，应用程序都可以将一个新的描述符集绑定到命令缓冲区，只要具有相同的布局就行。相同的描述符集布局可以用来创建多个管线。
+
+可调用vkCreateDescriptorSetLayout()来创建描述符集布局对象，其原型如下：
+
+```c++
+VkResult vkCreateDescriptorSetLayout (
+    VkDevice                                           device,
+    constVkDescriptorSetLayoutCreateInfo＊      pCreateInfo,
+    constVkAllocationCallbacks＊                  pAllocator,
+    VkDescriptorSetLayout＊                          pSetLayout);
+```
+
+```c++
+typedef structVkDescriptorSetLayoutCreateInfo {
+    VkStructureType                     sType; // 设为 VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO
+    const void＊                        pNext; // 设为 nullptr
+    VkDescriptorSetLayoutCreateFlags    flags; // 留待以后使用，设为0
+    uint32_t                            bindingCount; // 该集合中的绑定点个数
+    constVkDescriptorSetLayoutBinding＊ pBindings; // 描述信息的数组的指针
+} VkDescriptorSetLayoutCreateInfo;
+```
+
+```c++
+typedef structVkDescriptorSetLayoutBinding {
+    uint32_t                 binding; // 绑定序号
+    VkDescriptorType       descriptorType; // 资源类型
+    uint32_t                 descriptorCount; // 
+    VkShaderStageFlags     stageFlags;
+    constVkSampler＊       pImmutableSamplers;
+} VkDescriptorSetLayoutBinding;
+```

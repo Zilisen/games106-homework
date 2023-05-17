@@ -27,7 +27,7 @@ cmake
 编译报错缺少gml.hpp
 ![error](error.png)
 下载glm库文件放入base文件夹重新编译即可
-git submodule update --init --recursive
+`git submodule update --init --recursive`
 可以下载glm依赖库
 
 ![hw0_run](./hw0_run.png)
