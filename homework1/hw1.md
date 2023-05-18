@@ -47,9 +47,6 @@ float3 Tonemap_ACES(const float3 c) {
 
 need redo，将一些不太清晰的概念记录在下面。
 
-参考资料：
-《Vulkan应用开发指南》
-
 ## 描述符集
 
 描述符集是作为整体绑定到管线的资源的集合。可以同时将多个集合绑定到一个管线。每一个集合都有一个布局，布局描述了集合中资源的排列顺序和类型。两个拥有相同布局的集合被视为兼容的和可相互交换的。描述符集的布局通过一个对象表示，集合都是参照这个对象创建的。另外，可被管线访问的集合的集合组成了另一个对象—— 管线布局。管线通过参照这个管线布局对象来创建。
@@ -79,6 +76,7 @@ typedef structVkDescriptorSetLayoutCreateInfo {
 ```
 
 ```c++
+// 资源绑定到描述符集里的绑定点
 typedef structVkDescriptorSetLayoutBinding {
     uint32_t                 binding; // 绑定序号
     VkDescriptorType       descriptorType; // 资源类型
@@ -87,3 +85,27 @@ typedef structVkDescriptorSetLayoutBinding {
     constVkSampler＊       pImmutableSamplers;
 } VkDescriptorSetLayoutBinding;
 ```
+
+为了把两个或多个描述符集打包成管线可以使用的形式，需要把它们汇集到一个VkPipelineLayout对象里。为此，需要调用vkCreatePipelineLayout():
+
+```c++
+VkResult vkCreatePipelineLayout (
+    VkDevice                                     device,
+    constVkPipelineLayoutCreateInfo＊      pCreateInfo, 
+    constVkAllocationCallbacks＊            pAllocator,
+    VkPipelineLayout＊                          pPipelineLayout);
+```
+
+```c++
+// 管线布局创建结构体信息
+typedef structVkPipelineLayoutCreateInfo {
+    VkStructureType                     sType; // 设为VK_STRUCTURE_TYPE_PIPELINE_ LAYOUT_CREATE_INFO
+    const void＊                          pNext; // 设为 nullptr
+    VkPipelineLayoutCreateFlags      flags; // 设为 0
+    uint32_t                             setLayoutCount; // 描述符集布局的数量（和管线布局中集合的个数相同
+    constVkDescriptorSetLayout＊     pSetLayouts; // 一个指向VkDescriptorSetLayout类型句柄数组的指针（之前调用vkCreateDescriptorSetLayout()创建
+    uint32_t                             pushConstantRangeCount; //推送常量
+    constVkPushConstantRange＊       pPushConstantRanges;
+} VkPipelineLayoutCreateInfo;
+```
+
