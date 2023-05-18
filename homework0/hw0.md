@@ -1,6 +1,13 @@
 # games106 hw0
 
-环境配置
+作业要求：环境配置，运行hw0
+
+下载submodule,会下载glm库文件到external文件夹:
+
+```c++
+git submodule init
+git submodule update
+```
 
 ## MAC
 
