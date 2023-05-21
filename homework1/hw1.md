@@ -398,3 +398,73 @@ void vkCmdBindDescriptorSets (
 
 ### uniform、纹素和存储缓冲区
 
+着色器可以直接通过3种资源访问缓冲区内存的内容。
+
+- uniform块提供了对存储在缓冲区对象中常量（只读）数据的快速访问。在着色器内就像结构体一样声明它们，使用绑定到描述符集的缓冲区资源来将这些uniform块绑定到内存上。
+- 着色器块提供了对缓冲区对象的读写访问。和uniform块的声明类似，数据就像结构体一样组织，但可以写入数据。着色器块也支持原子操作。
+- 纹素缓冲区提供了对存储格式化纹素数据的长线性数组的访问能力。它们是只读的，纹素缓冲区绑定会将潜在的数据格式转化为着色器读取缓冲区时期待的浮点形式。
+
+```glsl
+//uniform块
+layout(set = 0, binding= 1) uniform my_uniform_buffer_t
+{
+    float foo;
+    vec4 bar;
+    int baz[42];
+} my_uniform_buffer;
+
+//着色器块
+layout(set = 0, binding= 2) buffer my_storage_buffer_t
+{
+    int peas;
+    float carrots;
+    vec3 potatoes[99];
+} my_storage_buffer;
+
+//纹素缓冲区
+layout(set = 0, binding= 3) uniform samplerBuffer my_float_texel_buffer;
+layout(set = 0, binding= 4) uniform isamplerBuffer my_signed_texel_buffer;
+layout(set = 0, binding= 5) uniform usamplerBuffer my_unsigned_texel_buffer;
+```
+
+### 推送常量
+
+推送常量是一种着色器里使用的uniform变量，可以像uniform块那样使用，但是并不需要存储在内存里，它由Vulkan自身持有和更新。结果就是，这些常量的新值可以被直接从命令缓冲区推送到管线，因此而得名。
+
+```c++
+typedef struct VkPushConstantRange {
+    VkShaderStageFlags     stageFlags;
+    uint32_t                 offset;
+    uint32_t                 size;
+} VkPushConstantRange;
+```
+
+要在管线内使用推送常量，就需要在管线着色器内声明变量来表示它们。在SPIR-V着色器中，推送常量通过在变量声明上使用PushConstant存储类来声明。在GLSL中，这样的声明可以通过声明一个带有push_constant限定符的uniform块来产生。在每一个管线中只有一个这样的块声明。逻辑上，它和std430块有相同的“内存内”布局。然而，这个布局只用来计算成员的偏移量，并且可能并不是Vulkan实现在内部表示块内数据的方式。
+
+```glsl
+layout(push_constant) uniform my_push_constants_t
+{
+    int bourbon;
+    int scotch;
+    int beer;
+} my_push_constants;
+```
+
+推送常量变成了使用它的管线布局的一部分。当把推送常量包含进管线时，它们也许会消耗Vulkan用于追踪管线或描述符绑定的一些资源。因此，应该把推送常量看作相当珍贵的资源。
+
+要更新一个或者多个推送常量，可调用vkCmdPushConstants():
+
+```c++
+void vkCmdPushConstants (
+    VkCommandBuffer                 commandBuffer,
+    VkPipelineLayout                layout,
+    VkShaderStageFlags             stageFlags,
+    uint32_t                          offset,
+    uint32_t                          size,
+    const void＊                      pValues);
+```
+
+将执行更新的命令缓冲区通过commandBuffer指定，定义推送常量的位置的布局通过layout指定。这个布局必须要和随后绑定的并用于分发或者绘制命令的任何管线相兼容。
+推送常量在逻辑上按照std430布局规则在内存中存储，每一个推送常量的内容都“生存”在相对于内存块的起始位置的偏移量上（可以使用std430规则计算）。要更新的第一个常量在虚拟块内的偏移量由offset指定，更新的量的大小通过size指定，单位是字节。
+需要放到推送常量中的数据通过一个指针pValues传递。
+把推送常量当作稀缺资源。优先使用正常的uniform块来存储大数据结构，将推送常量用作整数或者更新非常频繁的数据。
