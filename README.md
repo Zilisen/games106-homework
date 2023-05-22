@@ -26,3 +26,8 @@ the homework of game106
 
 [RenderDoc](https://renderdoc.org/)
 [NVIDIA Nsight Graphics](https://developer.nvidia.com/nsight-graphics)
+
+```c#
+// 使用glslangValidator程序编译SPIR-V二进制码，可创建一个批处理文件方便编译shader
+glslangValidator -V mesh.vert
+```

@@ -51,6 +51,7 @@ need redo，将一些不太清晰的概念记录在下面。
 
 ### 1.支持gltf的骨骼动画
 
+![hw1_1](img/hw1_1.gif)
 示例examples/gltfskinning/gltfskinning.cpp中的实现是有皮肤数据的，homework1中的gltf数据读出来是没有skin数据的。毕竟hw1中的模型是个机器飞机，没有皮肤才正常。
 
 所以我们要做的就是修改Node结构体，增加Animation相关结构体，读取、存储、更新Animation，同时更新shader中的PushConsts model矩阵，vertex shader中通过mvp变换，即通过改变了顶点位置实现了骨骼动画，不用重新编译shader。
@@ -71,8 +72,11 @@ while (currentParent) {
 vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &nodeMatrix);
 ```
 
+[完整代码](hw1history/homework1_1.cpp)
+
 ### 2.支持gltf的PBR的材质(包括法线贴图)
 
+1. 直接光照 examples/pbrbasic/pbrbasic.cpp
 
 
 ### 3.Tone Mapping后处理(提高)
