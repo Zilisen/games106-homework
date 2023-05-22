@@ -1,5 +1,7 @@
 # Vulkan Pipeline
 
+[toc]
+
 ## 在着色器中访问资源
 
 ### 描述符集
@@ -194,7 +196,7 @@ VkResult vkCreateDescriptorPool (
 ```
 
 ```c++
-typedef structVkDescriptorPoolCreateInfo {
+typedef struct VkDescriptorPoolCreateInfo {
     VkStructureType                    sType; // VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO
     const void＊                        pNext; // nullptr
     VkDescriptorPoolCreateFlags     flags; // 0
@@ -205,7 +207,7 @@ typedef structVkDescriptorPoolCreateInfo {
 ```
 
 ```c++
-typedef structVkDescriptorPoolSize {
+typedef struct VkDescriptorPoolSize {
     VkDescriptorType     type; // 指定了资源的类型
     uint32_t               descriptorCount; // 指定了在池中该种类型资源的个数
 } VkDescriptorPoolSize;
@@ -223,7 +225,7 @@ VkResult vkAllocateDescriptorSets (
 ```
 
 ```c++
-typedef structVkDescriptorSetAllocateInfo {
+typedef struct VkDescriptorSetAllocateInfo {
     VkStructureType                     sType; // VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO
     const void＊                          pNext; // nullptr
     VkDescriptorPool                    descriptorPool; // 指定可以从中分配集合的描述符缓存池的句柄
