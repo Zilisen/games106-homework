@@ -76,6 +76,8 @@ vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0,
 
 ### 2.支持gltf的PBR的材质(包括法线贴图)
 
+[描述符布局相关扩展资料](https://geek-docs.com/vulkan/vulkan-tutorial/vulkan-descriptor-layout-and-buffer.html)
+
 1. 直接光照 examples/pbrbasic/pbrbasic.cpp
 
 

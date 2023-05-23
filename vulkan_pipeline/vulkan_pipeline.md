@@ -8,7 +8,7 @@
 
 描述符集是作为整体绑定到管线的资源的集合。可以同时将多个集合绑定到一个管线。每一个集合都有一个布局，布局描述了集合中资源的排列顺序和类型。两个拥有相同布局的集合被视为兼容的和可相互交换的。描述符集的布局通过一个对象表示，集合都是参照这个对象创建的。另外，可被管线访问的集合的集合组成了另一个对象—— 管线布局。管线通过参照这个管线布局对象来创建。
 
-![描述符集和管线集](img/2023-05-17-23-21-00.png)
+![描述符集和管线集](img/2023-05-18-21-01-01.png)
 
 在任何时刻，应用程序都可以将一个新的描述符集绑定到命令缓冲区，只要具有相同的布局就行。相同的描述符集布局可以用来创建多个管线。
 
@@ -23,7 +23,7 @@ VkResult vkCreateDescriptorSetLayout (
 ```
 
 ```c++
-typedef structVkDescriptorSetLayoutCreateInfo {
+typedef struct VkDescriptorSetLayoutCreateInfo {
     VkStructureType                     sType; // 设为 VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO
     const void＊                        pNext; // 设为 nullptr
     VkDescriptorSetLayoutCreateFlags    flags; // 留待以后使用，设为0
@@ -34,7 +34,7 @@ typedef structVkDescriptorSetLayoutCreateInfo {
 
 ```c++
 // 资源绑定到描述符集里的绑定点
-typedef structVkDescriptorSetLayoutBinding {
+typedef struct VkDescriptorSetLayoutBinding {
     uint32_t                 binding; // 绑定序号
     VkDescriptorType       descriptorType; // 资源类型
     uint32_t                 descriptorCount; // 
@@ -55,7 +55,7 @@ VkResult vkCreatePipelineLayout (
 
 ```c++
 // 管线布局创建结构体信息
-typedef structVkPipelineLayoutCreateInfo {
+typedef struct VkPipelineLayoutCreateInfo {
     VkStructureType                     sType; // 设为VK_STRUCTURE_TYPE_PIPELINE_ LAYOUT_CREATE_INFO
     const void＊                          pNext; // 设为 nullptr
     VkPipelineLayoutCreateFlags      flags; // 设为 0
@@ -89,38 +89,36 @@ voidmain(void)
 
 ```c++
 //描述了合体的图像-采样器。其中有一个集合，两个互斥的绑定
-static constVkDescriptorSetLayoutBinding Samplers[] =
+static const VkDescriptorSetLayoutBinding Samplers[] =
 {
     {
-        0,                                              //相对于绑定的起始位置
-        0
-        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, //合体的图像-采样器
-        1,                                              //创建一个绑定
-        VK_SHADER_STAGE_ALL,                          //在所有阶段里都能使用
-        nullptr                                         //没有静态的采样器
+        0,  //相对于绑定的起始位置 0
+        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,  //合体的图像-采样器
+        1,  //创建一个绑定
+        VK_SHADER_STAGE_ALL,    //在所有阶段里都能使用
+        nullptr //没有静态的采样器
     },
     {
-        2,                                              //相对于绑定的起始位置,可以不连续
-        2
+        2, //相对于绑定的起始位置,可以不连续 2
         VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, //合体的图像-采样器
-        1,                                              //创建一个绑定
-        VK_SHADER_STAGE_ALL,                          //在所有阶段里都能使用
-        nullptr                                         //没有静态的采样器
+        1, //创建一个绑定
+        VK_SHADER_STAGE_ALL, //在所有阶段里都能使用
+        nullptr //没有静态的采样器
     }
 };
 
 
 //这是uniform块。其中有一个集合，一个绑定
-static constVkDescriptorSetLayoutBinding UniformBlock =
+static const VkDescriptorSetLayoutBinding UniformBlock =
 {
-    0,                                                   //相对于绑定的起始位置
-    VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,               // Uniform内存块
-    1,                                                   // 一个绑定
-    VK_SHADER_STAGE_ALL,                               // 所有的阶段
-    nullptr                                             // 没有静态的采样器
+    0, //相对于绑定的起始位置
+    VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, // Uniform内存块
+    1, // 一个绑定
+    VK_SHADER_STAGE_ALL, // 所有的阶段
+    nullptr // 没有静态的采样器
 };
 //现在创建两个描述符集布局
-static constVkDescriptorSetLayoutCreateInfo createInfoSamplers =
+static const VkDescriptorSetLayoutCreateInfo createInfoSamplers =
 {
     VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
     nullptr,
@@ -128,7 +126,7 @@ static constVkDescriptorSetLayoutCreateInfo createInfoSamplers =
     2,
     &Samplers[0]
 };
-static constVkDescriptorSetLayoutCreateInfo createInfoUniforms =
+static const VkDescriptorSetLayoutCreateInfo createInfoUniforms =
 {
     VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
     nullptr,
