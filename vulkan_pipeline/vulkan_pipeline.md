@@ -266,7 +266,7 @@ void vkDestroyDescriptorPool(
 可以直接写入描述符集或者从另一个描述符集复制绑定，来把资源绑定到描述符集。两种情况下，都使用vkUpdateDescriptorSets()命令:
 
 ```c++
-voidvkUpdateDescriptorSets (
+void vkUpdateDescriptorSets (
     VkDevice                                 device,
     uint32_t                                 descriptorWriteCount, // 直接写入的个数
     constVkWriteDescriptorSet＊          pDescriptorWrites, // 写入的数据
@@ -276,7 +276,7 @@ voidvkUpdateDescriptorSets (
 ```
 
 ```c++
-typedef structVkWriteDescriptorSet {
+typedef struct VkWriteDescriptorSet {
     VkStructureType                        sType; // VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET
     const void＊                             pNext; // nullptr
     VkDescriptorSet                        dstSet; // 目标描述符集
@@ -291,7 +291,7 @@ typedef structVkWriteDescriptorSet {
 ```
 
 ```c++
-typedef structVkDescriptorImageInfo {
+typedef struct VkDescriptorImageInfo {
     VkSampler          sampler;
     VkImageView       imageView;
     VkImageLayout     imageLayout;
@@ -301,7 +301,7 @@ typedef structVkDescriptorImageInfo {
 将要绑定到描述符集的图像视图的句柄通过imageView传递。如果描述符集的资源是VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER，那么伴随的采样器的句柄通过sampler指定。当在描述符集里使用图像时，所期望的布局通过imageLayout传递。
 
 ```c++
-typedef structVkDescriptorBufferInfo {
+typedef struct VkDescriptorBufferInfo {
     VkBuffer          buffer;
     VkDeviceSize     offset;
     VkDeviceSize     range;
@@ -313,7 +313,7 @@ typedef structVkDescriptorBufferInfo {
 除了向描述符集直接写入之外，vkUpdateDescriptorSets()可以从一个描述符集向另外一个集合里复制描述符，或者在一个集合中的不同绑定之间复制描述符:
 
 ```c++
-typedef structVkCopyDescriptorSet {
+typedef struct VkCopyDescriptorSet {
     VkStructureType     sType; // VK_STRUCTURE_TYPE_COPY_DESCRIPTOR_SET
     const void＊          pNext; // nullptr
     VkDescriptorSet     srcSet; // 源描述符集
