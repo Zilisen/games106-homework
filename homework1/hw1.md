@@ -78,7 +78,7 @@ while (currentParent) {
 vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &nodeMatrix);
 ```
 
-[完整代码](hw1history/homework1_1.cpp)
+[方法一代码](hw1history/homework1_1.cpp)
 
 **方法二**：
 
