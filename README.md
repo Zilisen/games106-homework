@@ -13,6 +13,7 @@ the homework of game106
 
 ## reference
 
+<https://vulkan-tutorial.com/>
 《Vulkan应用开发指南》
 [Vulkan 教程|极客教程 (geek-docs.com)](https://geek-docs.com/vulkan/vulkan-tutorial/vulkan-tutorial-index.html)
 <https://github.com/G-FI/games106/tree/master>
@@ -20,7 +21,7 @@ the homework of game106
 
 ## Vulkan
 
-![Vulkan流程-创建对象](img/2023-05-18-21-01-01.png)
+![Vulkan流程-创建对象](vulkan_pipeline/img/2023-05-18-21-01-01.png)
 
 ## 调试工具
 

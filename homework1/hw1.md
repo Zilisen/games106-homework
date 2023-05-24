@@ -45,7 +45,7 @@ float3 Tonemap_ACES(const float3 c) {
 
 ## 开做
 
-need redo，将一些不太清晰的概念记录在下面。
+作业过程中遇到对vulkan和框架不熟悉的地方，最好的方式就是看vulkan官方tutorial文档和examples示例代码！
 
 [vulkan_pipeline](../vulkan_pipeline/vulkan_pipeline.md)
 
@@ -56,9 +56,15 @@ need redo，将一些不太清晰的概念记录在下面。
 
 所以我们要做的就是修改Node结构体，增加Animation相关结构体，读取、存储、更新Animation，同时更新shader中的PushConsts model矩阵，vertex shader中通过mvp变换，即通过改变了顶点位置实现了骨骼动画，不用重新编译shader。
 
-关键点：
+**关键点**：
 在void updateAnimation(float deltaTime)中根据动画数据更新了每个相关Node的transform。注意示例中是通过updateJoints函数中来更新shader中的joint matrices，以实现骨骼动画。我们不需要updateJoints函数，通过在updateAnimation后修改model并pushConst给shader实现骨骼动画。
 需要修改LoadNode函数，添加index的设置。
+
+**方法一**：
+
+1. 直接在drawNode中通过vkCmdPushConstants给GPU传递当前node的model值
+2. 不需要修改默认的shader和descriptorset
+3. 需要每一帧都调用buildCommandBuffers
 
 ```c++
 // drawNode函数中，由于此代码在buildCommandBuffers()中调用，但是buildCommandBuffers并不会没帧调用，需要自行修改
@@ -74,11 +80,17 @@ vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0,
 
 [完整代码](hw1history/homework1_1.cpp)
 
+**方法二**：
+
+1. 顶点结构体添加NodeIndex，表示每个顶点属于哪个node
+2. 使用着色器块存储缓冲区buffer存储和传递动画更新时每个node的变化矩阵
+3. 在vertex shader中根据NodeIndex选择合适的model变化矩阵，变化顶点位置
+
 ### 2.支持gltf的PBR的材质(包括法线贴图)
 
 [描述符布局相关扩展资料](https://geek-docs.com/vulkan/vulkan-tutorial/vulkan-descriptor-layout-and-buffer.html)
 
 1. 直接光照 examples/pbrbasic/pbrbasic.cpp
 
-
 ### 3.Tone Mapping后处理(提高)
+
