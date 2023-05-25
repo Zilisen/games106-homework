@@ -88,9 +88,12 @@ vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0,
 
 ### 2.支持gltf的PBR的材质(包括法线贴图)
 
-[描述符布局相关扩展资料](https://geek-docs.com/vulkan/vulkan-tutorial/vulkan-descriptor-layout-and-buffer.html)
-
-1. 直接光照 examples/pbrbasic/pbrbasic.cpp
+1. 先学习了解gltf材质相关概念
+   ![gltf](../vulkan_pipeline/img/gltfOverview-2.0.0b.png)
+2. gltf的的每个材质，都有r、g、b和一组对应的纹理，扩充material结构体，保存材质属性和各个纹理的索引，并添加descriptorSet
+3. 更新setupDescriptors()函数中的相关设置,images换成materials,添加额外的绑定
+4. drawNode时，根据node-mesh-primitives下使用的材质索引，绑定对应材质的descriptorSet
+5. 在pixel shader中使用材质属性和纹理更新颜色
 
 ### 3.Tone Mapping后处理(提高)
 

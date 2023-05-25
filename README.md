@@ -30,5 +30,6 @@ the homework of game106
 
 ```c#
 // 使用glslangValidator程序编译SPIR-V二进制码，可创建一个批处理文件方便编译shader
-glslangValidator -V mesh.vert
+glslangValidator -V mesh.vert -o mesh.vert.spv
+glslangValidator -V mesh.frag -o mesh.frag.spv
 ```
