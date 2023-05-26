@@ -95,5 +95,26 @@ vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0,
 4. drawNode时，根据node-mesh-primitives下使用的材质索引，绑定对应材质的descriptorSet
 5. 在pixel shader中使用材质属性和纹理更新颜色
 
+bugfix：
+
+**BUG01**：
+![bug1](hw1_img/hw1_2023-05-26-11-25-55.png)
+normalMap导入计算新的法线后，出现奇怪的黑影
+问题产生的原因是normalMapTextureIndex没有读取成功，默认把index为0的texture作为的normalmap，在LoadMaterials中做修改即可解决：
+```c++
+// Get normal texture index
+if (glTFMaterial.values.find("normalTexture") != glTFMaterial.values.end()) {
+    materials[i].normalTextureIndex = glTFMaterial.values["normalTexture"].TextureIndex();
+}
+
+// values改为additionalValues
+if (glTFMaterial.additionalValues.find("normalTexture") != glTFMaterial.additionalValues.end()) {
+    materials[i].normalTextureIndex = glTFMaterial.additionalValues["normalTexture"].TextureIndex();
+}
+```
+
+**BUG02**：
+vkAllocateDescriptorSets引发异常。检查VkDescriptorPoolSize创建的时候是否给了足够的size，如果size不够就会出现此bug。
+
 ### 3.Tone Mapping后处理(提高)
 
