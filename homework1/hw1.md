@@ -118,3 +118,6 @@ vkAllocateDescriptorSets引发异常。检查VkDescriptorPoolSize创建的时候
 
 ### 3.Tone Mapping后处理(提高)
 
+1. multi pass 可以参考examples中的bloom项目，建立后处理pass
+2. 增加一个tone mapping的pass，对mesh pass输出的图像进行处理
+
